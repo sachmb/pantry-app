@@ -2,7 +2,7 @@ import React from 'react';
 // import fire from "./fire";
 // import 'bootstrap/dist/css/bootstrap.css';
 import Seed from './Seed';
-import { Card, Button, CardDeck, Form } from 'react-bootstrap';
+import { Card, Button, CardDeck, Form, Col, Row, Container } from 'react-bootstrap';
 import './App.css';
 
 class FoodList extends React.Component {
@@ -17,6 +17,7 @@ class FoodList extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.clearForm = this.clearForm.bind(this);
+    this.updateFilterList = this.updateFilterList.bind(this);
   }
 
   componentDidMount() {
@@ -60,6 +61,22 @@ class FoodList extends React.Component {
     this.setState({
       filteredFoods: newList
     });
+
+    // return (
+    //   <filterSearch
+    //     input={this.state.input}
+    //     foods={this.state.foods}
+    //     updateFilterList={this.updateFilterList}
+    //     {...this}
+    //   />
+    // );
+  }
+
+  updateFilterList(newList) {
+    alert('We pass argument from Child to Parent: ' + newList);
+    this.setState({
+      filteredFoods: newList
+    });
   }
 
   handleChange(e) {
@@ -84,7 +101,9 @@ class FoodList extends React.Component {
 
   clearForm() {
     this.setState({
-      filteredFoods: this.state.foods
+      filteredFoods: this.state.foods,
+      input: '',
+      showRemoveIcon: false,
     });
   }
 
@@ -103,36 +122,14 @@ class FoodList extends React.Component {
     ));
     return (
       <div className='mt-2'>
-        {/* <SearchField /> */}
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Form style={{ width: '18rem' }} onSubmit={this.handleSubmit} >
-            <Form.Group controlId="formBasic">
-              <Form.Label>Ingredients</Form.Label>
-              <Form.Control type="input"
-                placeholder="Enter Ingredient"
-                value={this.state.input}
-                onChange={this.handleChange}
-              />
-              <Button
-                variant="secondary"
-                onClick={this.clearForm}
-              >
-                Clear Search
-              </Button>
-            </Form.Group>
-            <Button
-              variant="primary"
-              type="submit"
-              disabled={this.state.input === "" ? true : false }
-            >
-              Submit
-          </Button>
-          </Form>
-        </div>
+        <SearchField
+          input={this.state.input}
+          handleChange={this.handleChange}
+          handleSubmit={this.handleSubmit}
+          clearForm={this.clearForm}
+          showRemoveIcon={this.state.showRemoveIcon}
+        />
 
-        {/* <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <input type="text" className="input" onChange={this.handleChange} placeholder="Search..." />
-        </div> */}
         <div className='mt-5'>
           <CardDeck>
             {foodComponents}
@@ -162,25 +159,46 @@ class Food extends React.Component {
   }
 }
 
-// class SearchField extends React.Component {
-//   render() {
-//     return (
-//       <div style={{ display: 'flex', justifyContent: 'center' }}>
-//         <Form style={{ width: '18rem' }}>
-//           <Form.Group controlId="formBasicEmail">
-//             <Form.Label>Ingredients</Form.Label>
-//             <Form.Control type="text"
-//               placeholder="Enter Ingredient"
-//               value={this.props.state.searchValue}
-//               onChange={this.props.onSearchChange} />
-//           </Form.Group>
-//           <Button variant="primary" type="submit">
-//             Submit
-//           </Button>
-//         </Form>
-//       </div>
-//     )
-//   }
-// }
+class SearchField extends React.Component {
+  render() {
+    const clearSearchButton = <Button
+      variant="secondary"
+      onClick={this.props.clearForm}
+      active={this.props.showRemoveIcon}
+    >
+      Clear
+              </Button>;
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <Form style={{ width: '18rem' }} onSubmit={this.props.handleSubmit} >
+          <Form.Group controlId="formBasic">
+            <Form.Label>Ingredients</Form.Label>
+            <Container>
+              <Row className="show-grid">
+                <Col md={10}>
+                  <Form.Control type="input"
+                    placeholder="Enter Ingredient"
+                    value={this.props.input}
+                    onChange={this.props.handleChange}
+                  />
+                </Col>
+                <Col md={2}>
+                  {this.props.showRemoveIcon ? clearSearchButton : ''}
+                </Col>
+              </Row>
+            </Container>
+          </Form.Group>
+          <Button
+            variant="primary"
+            type="submit"
+            disabled={this.props.input === "" ? true : false}
+          >
+            Submit
+          </Button>
+        </Form>
+      </div >
+    )
+  }
+}
 
 export default FoodList;
