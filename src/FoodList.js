@@ -44,13 +44,18 @@ class FoodList extends React.Component {
       newList = currentList.filter(description =>  {
         // change current item to lowercase
 
-        let cc = JSON.stringify(description,['description']);
+        var res = JSON.parse(JSON.stringify(description, function(a, b) {
+          return typeof b === "string" ? b.toLowerCase() : b
+        }));
+
+        let cc = JSON.stringify(res,['description']);
+        // let cc = JSON.stringify(description,['description']);
 
         // const lc = description.description.toLowerCase(); //use this
         // change search term to lowercase
         // const filter = e.target.value.toLowerCase();
-        // const filter = this.state.input.toLowerCase(); //use this
-        const filter = this.state.input;
+        const filter = this.state.input.toLowerCase(); //use this
+        // const filter = this.state.input;
         // check to see if the current list item includes the search term
         // If it does, it will be added to newList. Using lowercase eliminates
         // issues with capitalization in search terms and search content
