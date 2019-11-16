@@ -41,16 +41,21 @@ class FoodList extends React.Component {
       currentList = this.state.foods;
       // Use .filter() to determine which items should be displayed
       // based on the search terms
-      newList = currentList.filter(description => {
+      newList = currentList.filter(description =>  {
         // change current item to lowercase
-        const lc = description.description.toLowerCase();
+
+        let cc = JSON.stringify(description,['description']);
+
+        // const lc = description.description.toLowerCase(); //use this
         // change search term to lowercase
         // const filter = e.target.value.toLowerCase();
-        const filter = this.state.input.toLowerCase();
+        // const filter = this.state.input.toLowerCase(); //use this
+        const filter = this.state.input;
         // check to see if the current list item includes the search term
         // If it does, it will be added to newList. Using lowercase eliminates
         // issues with capitalization in search terms and search content
-        return lc.includes(filter);
+
+        return cc.includes(filter);
       });
     } else {
       // If the search bar is empty, set newList to original task list
@@ -61,15 +66,6 @@ class FoodList extends React.Component {
     this.setState({
       filteredFoods: newList
     });
-
-    // return (
-    //   <filterSearch
-    //     input={this.state.input}
-    //     foods={this.state.foods}
-    //     updateFilterList={this.updateFilterList}
-    //     {...this}
-    //   />
-    // );
   }
 
   updateFilterList(newList) {
@@ -121,19 +117,21 @@ class FoodList extends React.Component {
       />
     ));
     return (
-      <div className='mt-2'>
-        <SearchField
-          input={this.state.input}
-          handleChange={this.handleChange}
-          handleSubmit={this.handleSubmit}
-          clearForm={this.clearForm}
-          showRemoveIcon={this.state.showRemoveIcon}
-        />
+      <div>
+        <div className='mt-2'>
+          <SearchField
+            input={this.state.input}
+            handleChange={this.handleChange}
+            handleSubmit={this.handleSubmit}
+            clearForm={this.clearForm}
+            showRemoveIcon={this.state.showRemoveIcon}
+          />
+        </div>
 
-        <div className='mt-5'>
+        <div className='mt-5' style={{ paddingLeft: "20px", paddingRight: "20px" }}>
           <CardDeck>
             {foodComponents}
-          </CardDeck>
+        </CardDeck>
         </div>
       </div>
     );
@@ -141,20 +139,25 @@ class FoodList extends React.Component {
 }
 
 class Food extends React.Component {
-
+  
   render() {
+    const generateKey = (pre) => {
+      return `${ pre }_${ new Date().getTime() }`;
+  }
+    const ingredientList = this.props.description.map((i)=>
+    <li key={generateKey(i)}>{i}</li>);
     return (
       <Card className="card-style" style={{ width: '18rem' }}>
         <Card.Img variant="top" src={this.props.productImageUrl} />
         <Card.Body>
           <Card.Title>{this.props.title}</Card.Title>
           <Card.Text>
-            {this.props.description}
+            {ingredientList}
+            {/* {this.props.description} */}
           </Card.Text>
-          <Button href={this.props.url} variant="primary">Go somewhere</Button>
+          <Button href={this.props.url} variant="primary">How To</Button>
         </Card.Body>
       </Card>
-
     );
   }
 }
@@ -170,12 +173,12 @@ class SearchField extends React.Component {
               </Button>;
     return (
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Form style={{ width: '18rem' }} onSubmit={this.props.handleSubmit} >
+        <Form style={{ width: '24rem' }} onSubmit={this.props.handleSubmit} >
           <Form.Group controlId="formBasic">
             <Form.Label>Ingredients</Form.Label>
             <Container>
               <Row className="show-grid">
-                <Col md={10}>
+                <Col md={9} style={{ paddingLeft: 0, paddingRight: 0 }}>
                   <Form.Control type="input"
                     placeholder="Enter Ingredient"
                     value={this.props.input}
