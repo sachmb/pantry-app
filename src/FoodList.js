@@ -11,7 +11,8 @@ class FoodList extends React.Component {
     this.state = {
       foods: [],
       filteredFoods: [],
-      input: '',
+      // input: '',
+      input: [],
       showRemoveIcon: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -54,13 +55,14 @@ class FoodList extends React.Component {
         // const lc = description.description.toLowerCase(); //use this
         // change search term to lowercase
         // const filter = e.target.value.toLowerCase();
-        const filter = this.state.input.toLowerCase(); //use this
+        const filter = this.state.input //use this
         // const filter = this.state.input;
         // check to see if the current list item includes the search term
         // If it does, it will be added to newList. Using lowercase eliminates
         // issues with capitalization in search terms and search content
 
-        return cc.includes(filter);
+        // return cc.includes(filter);
+        return cc.some(r=> filter.indexOf(r) >= 0);
       });
     } else {
       // If the search bar is empty, set newList to original task list
@@ -82,9 +84,10 @@ class FoodList extends React.Component {
 
   handleChange(e) {
     const value = e.target.value;
-
+    const listValue = value.split(',');
     this.setState({
-      input: value,
+      // input: value,
+      input: listValue,
     });
 
     if (value === '') {
